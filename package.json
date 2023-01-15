@@ -1,0 +1,24 @@
+{
+  "name": "switch_rewrite",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Seol7523/swITch.git"
+  },
+  "author": "Seol7523",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Seol7523/swITch/issues"
+  },
+  "homepage": "https://github.com/Seol7523/swITch#readme",
+  "dependencies": {
+    "express": "^4.17.2",
+    "socket.io": "^4.4.1"
+  }
+}
