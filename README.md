@@ -6,3 +6,7 @@
 코드에 대한 문의는 언제나 환영입니다.
 
 궁금증이 있으시면 깃헙 이슈나 seolchaehwan@naver.com(seolmango이메일)으로 연락주세요
+
+
+
+made by seolmango, mossygoldcoin, ysw421 and H with ❤
