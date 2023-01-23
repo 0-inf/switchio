@@ -10,3 +10,28 @@
 
 
 made by seolmango, mossygoldcoin, ysw421 and H with ❤
+
+이미지와 효과음, 배경음악과 같은 리소스들도 자유로운 사용은 가능합니다만, 출처를 표기해시면 감사하겠습니다. ~~의무는 아니지만 부탁입니다~~
+
+아래는 swITch 프로젝트에 참여한 사람들입니다.
+
+> + [SeolMango](https://github.com/seolmango)
+>
+> 게임의 전반적인 기획을 하였고, 개발에 참여했습니다.
+>
+> + [MossyGoldCoin](https://github.com/Mossygoldcoin)
+>
+> 개발자~~SeolMango의 노예~~로 참여했습니다. 본인 피셜 본인이 코딩 대장이라고...
+>
+> + [ysw421](https://github.com/ysw421)
+>
+> 개발자로 참여함과 동시에 ~~거의 유일한~~ 미적 감각의 소유자로써 디자인에도 참여했습니다.
+>
+> + [H](https://soundcloud.com/hraver?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
+>
+> 배경음악과 효과음 제작을 맡았습니다. 
+
+사용된 음악에 대한 정보입니다.
+
+<a href="https://soundcloud.com/hraver" title="H" target="_blank" style="color: #cccccc; text-decoration: none;">H</a> · <a href="https://soundcloud.com/hraver/switchover" title="swITchover" target="_blank" style="color: #cccccc; text-decoration: none;">swITchover</a></div>
+
