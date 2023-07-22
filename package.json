@@ -1,5 +1,5 @@
 {
-  "name": "switch_rewrite",
+  "name": "switch",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
@@ -11,8 +11,8 @@
     "type": "git",
     "url": "git+https://github.com/Seol7523/swITch.git"
   },
-  "author": "Seol7523",
-  "license": "ISC",
+  "author": "0-inf",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Seol7523/swITch/issues"
   },
