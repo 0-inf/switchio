@@ -1,9 +1,8 @@
-const { time } = require('console');
-var express = require('express');
-var app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-var path = require('path');
+const express = require('express');
+const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+const path = require('path');
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -56,9 +55,9 @@ const { isObject } = require('util');
 const devcode = "yZVrK8xyp46yWoGCEf1zmUXeWazgvqunOumawOSul0zZ2xFYwKrmMAEouRvotwoMZJwKuBz3BMayllpKzNFxXWClyOApGztikNztUju02diBKgMkdY9lqihPZvoO8T6IHrPjmuuG5bGGfR96805HEqbGKGB8w9EPjObVBrD1nwjU4zms18ybfJyeXfZChGJEYGko0ymQVRqx9ShMgQB5hbBUSM2Pq8VWZNf8ZmUdSadq76NX9HO2vCVA0irtYHD";
 let dev = [];
 
-var port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 http.listen(port, function () {
-    console.log("server on!: http://localhost:3000");
+    console.log(`server on!: http://localhost:${port}`);
 });
 
 
