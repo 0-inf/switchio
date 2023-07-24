@@ -52,6 +52,7 @@ function RoomManager(Player, Room) {
     }
 
     this.StartGame = function (RoomId) {
+        Room.PlayerGameStats[RoomId] = [[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]]; // [아웃시킨 플레이어 수, 스위치 성공 횟수, 스위치 사용 횟수]
         Room.StartTime[RoomId] = Date.now();
         Room.LiveCounts[RoomId] = Room.PlayerCounts[RoomId];
         Room.PlayerLiveStates[RoomId] = new Int8Array(8);

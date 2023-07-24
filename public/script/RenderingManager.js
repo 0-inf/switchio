@@ -477,19 +477,36 @@ function RenderingManager(Screen, Client) {
                 }
             },
             "result": function () {
-                drawText(Screen.BGctx, 800, 200, 80, 0, "#000000", false, false, (Client.Settings.Language === 0) ? "Winner" : "승리자", "center");
+                drawRect(Screen.BGctx, 0, 0, 1600, 900, "#ffffff", 1);
+                // 사용자 눈에 보이는 부분
+                drawText(Screen.BGctx, 800, 100, 80, 0, "#000000", false, false, (Client.Settings.Language === 0) ? "Result" : "결과", "center");
+                drawText(Screen.BGctx, 10, 150, 50, 0, "#000000", false, false, (Client.Settings.Language === 0) ? "Winner" : "우승자", "left");
                 if (Client.Room.WinnerNames.length === 1) {
-                    drawCircle(Screen.BGctx, 800, 450, 100, Client.PlayerColors[Client.Room.WinnerNums[0]]);
-                    drawText(Screen.BGctx, 800, 450, 125, 0, false, "#000000", 7.5, `${Client.Room.WinnerNums[0] + 1}`, "center");
-                    drawText(Screen.BGctx, 800, 600, 40, 0, "#000000", false, false, Client.Room.WinnerNames[0], "center");
+                    drawCircle(Screen.BGctx, 150, 500, 100, Client.PlayerColors[Client.Room.WinnerNums[0]]);
+                    drawText(Screen.BGctx, 150, 500, 125, 0, false, "#000000", 7.5, `${Client.Room.WinnerNums[0] + 1}`, "center");
+                    drawText(Screen.BGctx, 150, 650, 40, 0, "#000000", false, false, Client.Room.WinnerNames[0], "center");
                 } else {
-                    drawCircle(Screen.BGctx, 550, 450, 100, Client.PlayerColors[Client.Room.WinnerNums[0]]);
-                    drawCircle(Screen.BGctx, 1050, 450, 100, Client.PlayerColors[Client.Room.WinnerNums[1]]);
-                    drawText(Screen.BGctx, 550, 450, 125, 0, false, "#000000", 7.5, `${Client.Room.WinnerNums[0] + 1}`, "center");
-                    drawText(Screen.BGctx, 1050, 450, 125, 0, false, "#000000", 7.5, `${Client.Room.WinnerNums[1] + 1}`, "center");
-                    drawText(Screen.BGctx, 550, 600, 40, 0, "#000000", false, false, Client.Room.WinnerNames[0], "center");
-                    drawText(Screen.BGctx, 1050, 600, 40, 0, "#000000", false, false, Client.Room.WinnerNames[1], "center");
+                    drawCircle(Screen.BGctx, 150, 300, 75, Client.PlayerColors[Client.Room.WinnerNums[0]]);
+                    drawCircle(Screen.BGctx, 150, 600, 75, Client.PlayerColors[Client.Room.WinnerNums[1]]);
+                    drawText(Screen.BGctx, 150, 300, 90, 0, false, "#000000", 7.5, `${Client.Room.WinnerNums[0] + 1}`, "center");
+                    drawText(Screen.BGctx, 150, 600, 90, 0, false, "#000000", 7.5, `${Client.Room.WinnerNums[1] + 1}`, "center");
+                    drawText(Screen.BGctx, 150, 400, 40, 0, "#000000", false, false, Client.Room.WinnerNames[0], "center");
+                    drawText(Screen.BGctx, 150, 700, 40, 0, "#000000", false, false, Client.Room.WinnerNames[1], "center");
                 }
+                drawText(Screen.BGctx, 400, 150, 55, 0, "#000000", false, false, (Client.Settings.Language === 0) ? "Stats" : "상세정보", "left");
+                drawText(Screen.BGctx, 400, 200, 55, 0, "#000000", false, false, (Client.Settings.Language === 0) ? "Name" : "이름", "left");
+                drawText(Screen.BGctx, 900, 200, 55, 0, "#000000", false, false, (Client.Settings.Language === 0) ? "Kill" : "킬 수", "left");
+                drawText(Screen.BGctx, 1300, 200, 55, 0, "#000000", false, false, (Client.Settings.Language === 0) ? "Switch" : "스위치", "left");
+                result_draw_y = 260;
+                for (i = 0; i < 8; i++) {
+                    if (Client.Room.PlayerIds[i] !== 0){
+                        drawText(Screen.BGctx, 400, result_draw_y, 50, 0, "#000000", false, false, `${i + 1}. ${Client.Room.PlayerNames[i]}`, "left");
+                        drawText(Screen.BGctx, 900, result_draw_y, 50, 0, "#000000", false, false, `${Client.Room.PlayerGameStats[i][0]}`, "left");
+                        drawText(Screen.BGctx, 1300, result_draw_y, 50, 0, "#000000", false, false, `${Client.Room.PlayerGameStats[i][1]}/${Client.Room.PlayerGameStats[i][2]}(${Math.round(Client.Room.PlayerGameStats[i][1] / (Client.Room.PlayerGameStats[i][2] == 0 ? 1 : Client.Room.PlayerGameStats[i][2]) * 100)}%)`, "left");
+                        result_draw_y += 50
+                    }
+                }
+                Button("save", 400, 800, 400, 80, [[159, 159, 159], [127, 127, 127]], [8, [127, 127, 127], [103, 103, 103]], [48, 0, [[223, 223, 223], [231, 231, 231]], false, (Client.Settings.Language === 0) ? "Screenshot" : "스크린샷", "center"]);
                 drawText(Screen.BGctx, 1600, 800, 30, 0, "#7f7f7f", false, false, (Client.Settings.Language === 0) ? `You'll automatically move to the ready room in ${Math.ceil((Client.Room.ResultTime - Date.now() + 5000) * 0.001)}` : `${Math.ceil((Client.Room.ResultTime - Date.now() + 5000) * 0.001)}초 후 자동으로 나가집니다.`, "right");
                 if (Client.Room.ResultTime + 5000 <= Date.now()) { Screen.Now.Delete(); Screen.Now = new Screen.Create("ready"); }
             }
@@ -619,9 +636,11 @@ function RenderingManager(Screen, Client) {
 }
 
 
-function drawText(ctx, x, y, size, rotate, fillColor, strokeColor, strokeWidth, message, align) {
-    x+= window.XfixStart;
-    y+= window.YfixStart;
+function drawText(ctx, x, y, size, rotate, fillColor, strokeColor, strokeWidth, message, align, fix=true) {
+    if(fix){
+        x+= window.XfixStart;
+        y+= window.YfixStart;
+    }
     ctx.save();
     ctx.beginPath();
     ctx.font = size + "px 'yg-jalnan'";
@@ -670,11 +689,13 @@ function drawButton(ctx, button) {
     }
 }
 
-function drawLine(ctx, x1, y1, x2, y2, color, lineWidth) {
-    x1+= window.XfixStart;
-    y1+= window.YfixStart;
-    x2+= window.XfixStart;
-    y2+= window.YfixStart;
+function drawLine(ctx, x1, y1, x2, y2, color, lineWidth, fix=true) {
+    if(fix){
+        x1+= window.XfixStart;
+        y1+= window.YfixStart;
+        x2+= window.XfixStart;
+        y2+= window.YfixStart;
+    }
     ctx.save();
     ctx.beginPath();
     ctx.strokeStyle = color;
@@ -685,9 +706,11 @@ function drawLine(ctx, x1, y1, x2, y2, color, lineWidth) {
     ctx.restore();
 }
 
-function drawRect(ctx, x, y, w, h, color, globalAlpha = 1) {
-    x+= window.XfixStart;
-    y+= window.YfixStart;
+function drawRect(ctx, x, y, w, h, color, globalAlpha = 1, fix=true) {
+    if(fix){
+        x+= window.XfixStart;
+        y+= window.YfixStart;
+    }
     ctx.save();
     ctx.globalAlpha = globalAlpha;
     ctx.fillStyle = color;
@@ -695,9 +718,11 @@ function drawRect(ctx, x, y, w, h, color, globalAlpha = 1) {
     ctx.restore();
 }
 
-function drawRoundedRect(ctx, x, y, width, height, fillColor, strokeColor, strokeWidth, arcRadius) {
-    x+= window.XfixStart;
-    y+= window.YfixStart;
+function drawRoundedRect(ctx, x, y, width, height, fillColor, strokeColor, strokeWidth, arcRadius, fix=true) {
+    if(fix){
+        x+= window.XfixStart;
+        y+= window.YfixStart;
+    }
     ctx.save();
     ctx.beginPath();
     ctx.moveTo(x - width * 0.5 + 10, y - height * 0.5);
@@ -772,9 +797,11 @@ function LoadImage(ctx, image){
     }**/
 }
 
-function drawCircle(ctx, x, y, r, fill, strokeColor, strokeWidth){
-    x+= window.XfixStart;
-    y+= window.YfixStart;
+function drawCircle(ctx, x, y, r, fill, strokeColor, strokeWidth, fix=true){
+    if(fix){
+        x+= window.XfixStart;
+        y+= window.YfixStart;
+    }
     ctx.save();
     ctx.beginPath();
     ctx.arc(x, y, r, 0, 2 * Math.PI);

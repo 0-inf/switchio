@@ -43,6 +43,7 @@ Room.PlayerDxs = new Array(RoomMaxNum); // 플레이어들 델타 x좌표들
 Room.PlayerDys = new Array(RoomMaxNum); // 플레이어들 델타 y좌표들
 Room.PlayerSightRanges = new Array(RoomMaxNum); // 플레이어들 시야 사정거리, 소수점 첫째자리까지 나타내기위해 10이 곱해져있음
 Room.PlayerBoosts = new Array(RoomMaxNum); // 플레이어들 부스트 여부, [undefined, [0, 1, 0, ...], ...]
+Room.PlayerGameStats = new Array(RoomMaxNum);
 
 // module import
 const RoomMg = new (require("./switch/RoomManager.js"))(Player, Room);
@@ -167,6 +168,7 @@ function PosUpdateLoop() {
                         Room.LiveCounts[i]--;
                         Room.PlayerLiveStates[i][j] = 0;
                         Room.TaggerChangeTime[i] = Date.now();
+                        Room.PlayerGameStats[i][Room.PlayerIds[i].indexOf(Room.TaggerIds[i])][0] += 1;
                         io.to(i).emit('player out', Room.PlayerIds[i][j]);
                     }
                 }
@@ -178,7 +180,7 @@ function PosUpdateLoop() {
                         LivePlayerIndexs.push(j);
                     }
                 }
-                io.to(i).emit('game over', LivePlayerIndexs);
+                io.to(i).emit('game over', LivePlayerIndexs, Room.PlayerGameStats[i]);
                 RoomMg.EndGame(i);
             } else {
                 if (Date.now() - Room.TaggerChangeTime[i] >= 20000){ // 술래 안바뀐지 20초 이상지나면 술래 자동 바뀜
@@ -363,10 +365,12 @@ io.on('connection', function (socket) {
 
     socket.on('change challenge', function (TargetId) {
         io.to(PlayerRoomId).emit('change challenge', PlayerId, TargetId);
+        Room.PlayerGameStats[PlayerRoomId][PlayerRoomNum][2] += 1;
         if (RoomMg.CheckTouch(PlayerId, Room.TaggerIds[PlayerRoomId], (TaggerChaRad + CharRad) * 1000)) {
             Room.TaggerIds[PlayerRoomId] = TargetId;
             Room.TaggerChangeTime[PlayerRoomId] = Date.now();
             io.to(PlayerRoomId).emit('change tagger', TargetId);
+            Room.PlayerGameStats[PlayerRoomId][PlayerRoomNum][1] += 1;
         }
     })
 

@@ -291,10 +291,11 @@ $(function () { // 창이 모두 로드된후 실행
             Client.Room.emoji[PlayerNum] = [Emoji, 60];
         });
 
-        socket.on('game over', function (WinnerIndexs) {
+        socket.on('game over', function (WinnerIndexs, PlayerGameStats) {
             Client.Room.Playing = 0;
             Client.Room.WinnerNums = WinnerIndexs;
             Client.Room.WinnerNames = [];
+            Client.Room.PlayerGameStats = PlayerGameStats;
             Client.Room.WinnerNames.push(Client.Room.PlayerNames[WinnerIndexs[0]]);
             if (WinnerIndexs.length > 1) {
                 Client.Room.WinnerNames.push(Client.Room.PlayerNames[WinnerIndexs[1]]);
@@ -572,6 +573,51 @@ $(function () { // 창이 모두 로드된후 실행
                     Screen.AlertData.unshift([(Client.Settings.Language === 0) ? "We need 3 players" : "최소한 3명의 플레이어가 필요합니다.", 30]);
                 }
             });
+        } else if (Screen.Now.name === "result") {
+            UIcheck(Screen.UI.result.save, function(){
+                const tmpcanvas = document.createElement('canvas');
+                tmpcanvas.width = 1600;
+                tmpcanvas.height = 900;
+                const tmpctx = tmpcanvas.getContext('2d');
+                drawRect(tmpctx, 0, 0, 1600, 900, "#ffffff", 1, fix=false);
+                image_title = new Image();
+                image_title.src = "./image/swITchIO_title.png";
+                tmpctx.drawImage(image_title, 1250, 800, 300, 90);
+                // 사용자 눈에 보이는 부분
+                drawText(tmpctx, 800, 100, 80, 0, "#000000", false, false, (Client.Settings.Language === 0) ? "Result" : "결과", "center", fix=false);
+                drawText(tmpctx, 10, 150, 50, 0, "#000000", false, false, (Client.Settings.Language === 0) ? "Winner" : "우승자", "left", fix=false);
+                if (Client.Room.WinnerNames.length === 1) {
+                    drawCircle(tmpctx, 150, 500, 100, Client.PlayerColors[Client.Room.WinnerNums[0]], false, 0,fix=false);
+                    drawText(tmpctx, 150, 500, 125, 0, false, "#000000", 7.5, `${Client.Room.WinnerNums[0] + 1}`, "center", fix=false);
+                    drawText(tmpctx, 150, 650, 40, 0, "#000000", false, false, Client.Room.WinnerNames[0], "center", fix=false);
+                } else {
+                    drawCircle(tmpctx, 150, 300, 75, Client.PlayerColors[Client.Room.WinnerNums[0]], false, 0, fix=false);
+                    drawCircle(tmpctx, 150, 600, 75, Client.PlayerColors[Client.Room.WinnerNums[1]], false, 0, fix=false);
+                    drawText(tmpctx, 150, 300, 90, 0, false, "#000000", 7.5, `${Client.Room.WinnerNums[0] + 1}`, "center", fix=false);
+                    drawText(tmpctx, 150, 600, 90, 0, false, "#000000", 7.5, `${Client.Room.WinnerNums[1] + 1}`, "center", fix=false);
+                    drawText(tmpctx, 150, 400, 40, 0, "#000000", false, false, Client.Room.WinnerNames[0], "center", fix=false);
+                    drawText(tmpctx, 150, 700, 40, 0, "#000000", false, false, Client.Room.WinnerNames[1], "center", fix=false);
+                }
+                drawText(tmpctx, 400, 150, 55, 0, "#000000", false, false, (Client.Settings.Language === 0) ? "Stats" : "상세정보", "left", fix=false);
+                drawText(tmpctx, 400, 200, 55, 0, "#000000", false, false, (Client.Settings.Language === 0) ? "Name" : "이름", "left", fix=false);
+                drawText(tmpctx, 900, 200, 55, 0, "#000000", false, false, (Client.Settings.Language === 0) ? "Kill" : "킬 수", "left", fix=false);
+                drawText(tmpctx, 1300, 200, 55, 0, "#000000", false, false, (Client.Settings.Language === 0) ? "Switch" : "스위치", "left", fix=false);
+                result_draw_y = 260;
+                for (i = 0; i < 8; i++) {
+                    if (Client.Room.PlayerIds[i] !== 0){
+                        drawText(tmpctx, 400, result_draw_y, 50, 0, "#000000", false, false, `${i + 1}. ${Client.Room.PlayerNames[i]}`, "left", fix=false);
+                        drawText(tmpctx, 900, result_draw_y, 50, 0, "#000000", false, false, `${Client.Room.PlayerGameStats[i][0]}`, "left", fix=false);
+                        drawText(tmpctx, 1300, result_draw_y, 50, 0, "#000000", false, false, `${Client.Room.PlayerGameStats[i][1]}/${Client.Room.PlayerGameStats[i][2]}(${Math.round(Client.Room.PlayerGameStats[i][1] / (Client.Room.PlayerGameStats[i][2] == 0 ? 1 : Client.Room.PlayerGameStats[i][2]) * 100)}%)`, "left", fix=false);
+                        result_draw_y += 50
+                    }
+                }
+                const image = tmpcanvas.toDataURL("image/png");
+                const link = document.createElement('a');
+                link.href = image;
+                link.download = `result.png`;
+                link.click();
+                tmpcanvas.remove();
+            })
         }
 
         function NameCheck (PlayerName) {
