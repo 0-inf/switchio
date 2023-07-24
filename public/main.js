@@ -144,6 +144,8 @@ $(function () { // 창이 모두 로드된후 실행
             if (!Playing) {
                 Client.Room.PlayerJoinAnimation[Client.RoomNum] = 30;
                 Screen.Now = new Screen.Create("ready");
+            }else{
+                Screen.AlertData.unshift([(Client.Settings.Language === 0) ? "You will participate after the game that was already played." : "이미 진행중인 게임이 끝나면 참가합니다.", 30]);
             }
         });
 
@@ -162,12 +164,13 @@ $(function () { // 창이 모두 로드된후 실행
 
         socket.on('user exit', function (PlayerId) {
             const PlayerNum = Client.Room.PlayerIds.indexOf(PlayerId);
+            Screen.AlertData.unshift([Client.Room.PlayerNames[PlayerNum] + ((Client.Settings.Language === 0) ? " left." : "가 나갔습니다."), 30]);
             Client.Room.PlayerCount--;
             Client.Room.PlayerIds[PlayerNum] = 0;
             Client.Room.PlayerNames[PlayerNum] = undefined;
             if (Client.Room.Playing && Client.Room.PlayerLiveStates[PlayerNum]) {
                 Client.Room.LivePlayerCount--;
-                Client.Room.PlayerLiveStates[PlayerNum] === 0;
+                Client.Room.PlayerLiveStates[PlayerNum] = 0;
             } else {
                 Client.Room.PlayerJoinAnimation[PlayerNum] = 30;
             }

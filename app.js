@@ -321,7 +321,7 @@ io.on('connection', function (socket) {
                 RoomMg.exitRoom(PlayerId, PlayerRoomId);
                 if (Room.States[PlayerRoomId] === 3) { // 만약 게임중인 방이라면
                     if (Room.LiveCounts[PlayerRoomId] <= 2) { // 나가면 생존자가 2명만 남아서 이기는 경우
-                        io.to(PlayerRoomId).emit('game over', Room.PlayerIds[PlayerRoomId].filter(id => Room.PlayerLiveStates[PlayerRoomId][Player.RoomNums[id]] === 1));
+                        io.to(PlayerRoomId).emit('game over', [0,1,2,3,4,5,6,7].filter(index => Room.PlayerLiveStates[PlayerRoomId][index] === 1));
                         RoomMg.EndGame(PlayerRoomId);
                     } else if (Room.TaggerIds[PlayerRoomId] === PlayerId) { // 나간사람이 술래인 경우
                         const LiveRunners = [0,1,2,3,4,5,6,7].filter(index => Room.PlayerLiveStates[PlayerRoomId][index] === 1);
