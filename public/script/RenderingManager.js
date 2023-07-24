@@ -506,7 +506,7 @@ function RenderingManager(Screen, Client) {
                         result_draw_y += 50
                     }
                 }
-                Button("save", 400, 800, 400, 80, [[159, 159, 159], [127, 127, 127]], [8, [127, 127, 127], [103, 103, 103]], [48, 0, [[223, 223, 223], [231, 231, 231]], false, (Client.Settings.Language === 0) ? "Screenshot" : "스크린샷", "center"]);
+                Button("save", 400, 800, 400, 80, [[159, 159, 159], [127, 127, 127]], [8, [127, 127, 127], [103, 103, 103]], [48, 0, [[223, 223, 223], [231, 231, 231]], false, (Client.Settings.Language === 0) ? "Share" : "공유하기", "center"]);
                 drawText(Screen.BGctx, 1600, 800, 30, 0, "#7f7f7f", false, false, (Client.Settings.Language === 0) ? `You'll automatically move to the ready room in ${Math.ceil((Client.Room.ResultTime - Date.now() + 5000) * 0.001)}` : `${Math.ceil((Client.Room.ResultTime - Date.now() + 5000) * 0.001)}초 후 자동으로 나가집니다.`, "right");
                 if (Client.Room.ResultTime + 5000 <= Date.now()) { Screen.Now.Delete(); Screen.Now = new Screen.Create("ready"); }
             }

@@ -580,6 +580,7 @@ $(function () { // 창이 모두 로드된후 실행
                 tmpcanvas.height = 900;
                 const tmpctx = tmpcanvas.getContext('2d');
                 drawRect(tmpctx, 0, 0, 1600, 900, "#ffffff", 1, fix=false);
+                drawText(tmpctx, 100, 845, 30, 0, "#000000", false, false, (Client.Settings.Language === 0) ? `Play swITchIO with ${Client.Name}!` : `${Client.Name}님과 함께 swITchIO를 즐기세요!`, "left", fix=false);
                 image_title = new Image();
                 image_title.src = "./image/swITchIO_title.png";
                 tmpctx.drawImage(image_title, 1250, 800, 300, 90);
