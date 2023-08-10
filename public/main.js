@@ -47,7 +47,6 @@ $(function () { // 창이 모두 로드된후 실행
     'rgb(121,255,206)','rgb(220,145,70)','rgb(174,205,255)',];
     Client.Settings = {};
     Client.Settings.Language = 0; // 0 : 영어, 1 : 한국어
-    Client.dev = false;
     setInterval(function () {
         if (Screen.Now.name === "ingame") { IngameLoop(); }
         Screen.BGctx.clearRect(0, 0, 1600 + (window.XfixStart * 2), 900 + (window.YfixStart * 2));
@@ -73,40 +72,19 @@ $(function () { // 창이 모두 로드된후 실행
             Client.Id = PlayerId;
             Screen.Resize();
             Screen.Alert = new Screen.Create("alert");
-            if("AppInventor" in window) {
-                Client.Settings.App = true;
-                let appset = window.AppInventor.getWebViewString();
-                if(appset.substr(0,3) === 'set'){
-                    Client.Settings.Language = parseInt(appset.substr(3,1));
-                    Screen.UI.Element.sound_slider.value = parseInt(appset.substr(4,3));
-                    Screen.Sounds.BGM.volume = parseInt(appset.substr(4,3))/100;
-                    Screen.Now = new Screen.Create('welcomeback');
-                }else{
-                    Screen.Now = new Screen.Create("agreement");
-                }
-            }else{
-                Client.Settings.App = false;
-                if(window.localStorage.getItem("settings") !== null || window.localStorage.getItem('sound') !== null) {
-                    if(window.localStorage.getItem('settings') !== null) {
-                        Client.Settings.Language = parseInt(window.localStorage.getItem("settings").substring(0, 1));
-                    };
-                    if(window.localStorage.getItem("sound") !== null){
-                        Screen.Sounds.BGM.volume = parseInt(window.localStorage.getItem("sound"))*0.01;
-                        Screen.UI.Element.sound_slider.value = parseInt(window.localStorage.getItem("sound"));
-                    }
-                    Screen.Now = new Screen.Create("welcomeback");
-                } else {
-                    Screen.Now = new Screen.Create("agreement");
+            if(window.localStorage.getItem("settings") !== null || window.localStorage.getItem('sound') !== null) {
+                if(window.localStorage.getItem('settings') !== null) {
+                    Client.Settings.Language = parseInt(window.localStorage.getItem("settings").substring(0, 1));
                 };
-                if(window.localStorage.getItem("MANAGER_CHECK") !== null){
-                    socket.emit('manager_check', window.localStorage.getItem("MANAGER_CHECK"));
+                if(window.localStorage.getItem("sound") !== null){
+                    Screen.Sounds.BGM.volume = parseInt(window.localStorage.getItem("sound"))*0.01;
+                    Screen.UI.Element.sound_slider.value = parseInt(window.localStorage.getItem("sound"));
                 }
-            }
+                Screen.Now = new Screen.Create("welcomeback");
+            } else {
+                Screen.Now = new Screen.Create("agreement");
+            };
         });
-
-        socket.on("YouAreDev",function(){
-            Client.dev = true;
-        })
 
         socket.on('no room', function (reason) {
             Screen.Now.Delete(); Screen.Now = new Screen.Create("matching");
@@ -130,13 +108,6 @@ $(function () { // 창이 모두 로드된후 실행
             Client.Name = PlayerNames[Client.RoomNum];
             Client.Room.PlayerCount = PlayerCount;
             Client.Room.PlayerNames = PlayerNames;
-            for(i = 0; i < 8; i++){
-                if(Client.Room.PlayerIds[i] !== 0){
-                    if(Client.Room.PlayerNames[i].slice(0,5) === "[개발자]"){
-                        Client.Room.PlayerNames[i] = Client.Room.PlayerNames[i].replace("[개발자]",(Client.Settings.Language === 0) ? "[DEV]" : "[개발자]");
-                    }
-                }
-            };
             Client.Room.OwnerId = OwnerId;
             Client.Room.Playing = Playing;
             Client.Room.PlayerJoinAnimation = [0,0,0,0,0,0,0,0];
@@ -152,11 +123,7 @@ $(function () { // 창이 모두 로드된후 실행
         socket.on('user join', function (PlayerId, PlayerName, PlayerNum) {
             Client.Room.PlayerCount++;
             Client.Room.PlayerIds[PlayerNum] = PlayerId;
-            if(PlayerName.slice(0,5) === "[개발자]"){
-                Client.Room.PlayerNames[PlayerNum] = PlayerName.replace("[개발자]",(Client.Settings.Language === 0) ? "[DEV]" : "[개발자]");
-            }else{
-                Client.Room.PlayerNames[PlayerNum] = PlayerName;
-            }
+            Client.Room.PlayerNames[PlayerNum] = PlayerName;
             if (!Client.Room.Playing) {
                 Client.Room.PlayerJoinAnimation[PlayerNum] = 30;
             }
@@ -194,9 +161,6 @@ $(function () { // 창이 모두 로드된후 실행
         });
 
         socket.on('start game', function (PlayerLiveStates, LiveCount, PlayerXs, PlayerYs, PlayerSightRanges, TaggerId, Map) {
-            if(Client.Settings.App){
-                Screen.Control = new Screen.Create("control");
-            }
             if (!Client.Room.Playing) {
                 Client.Room.Playing = 1;
                 Client.Camera = Client.Id;
@@ -278,9 +242,6 @@ $(function () { // 창이 모두 로드된후 실행
             if (Client.Id === PlayerId) {
                 Client.Camera = Client.Room.TaggerId;
                 Screen.AlertData.unshift([(Client.Settings.Language === 0) ? "You have been tagged out." : "술래한테 잡혔습니다.", 30]);
-                if(Client.Settings.App){
-                    Screen.Control.Delete();
-                }
             } else {
                 Screen.AlertData.unshift([Client.Room.PlayerNames[PlayerNum] + ((Client.Settings.Language === 0) ? " out!" : " 아웃!"), 30]);
             }
@@ -417,12 +378,8 @@ $(function () { // 창이 모두 로드된후 실행
         } else if(Screen.Now.name === "welcomeback"){
             UIcheck(Screen.UI.welcomeback.ok, function () { Screen.Now.Delete(); Screen.Now = new Screen.Create("title"); Screen.Sounds.BGM.currentTime = 0; Screen.Sounds.BGM.play();});
         }else if (Screen.Now.name === "title") {
-            if(Client.Settings.App) {
-                window.AppInventor.setWebViewString("sound"+String(Screen.UI.Element.sound_slider.value).padStart(3, "0"));
-            }else{
-                if(window.localStorage.getItem("sound") === null) {
-                    window.localStorage.setItem("sound", Screen.UI.Element.sound_slider.value);
-                }
+            if(window.localStorage.getItem("sound") === null) {
+                window.localStorage.setItem("sound", Screen.UI.Element.sound_slider.value);
             }
             UIcheck(Screen.UI.title.help, function () { Screen.Now.Delete(); Screen.Now = new Screen.Create("help"); });
             UIcheck(Screen.UI.title.credit, function () { Screen.Now.Delete(); Screen.Now = new Screen.Create("credit"); });
@@ -433,33 +390,17 @@ $(function () { // 창이 모두 로드된후 실행
         } else if (Screen.Now.name === "credit") {
             UIcheck(Screen.UI.credit.back, function () { Screen.Now.Delete(); Screen.Now = new Screen.Create("title"); });
             UIcheck(Screen.UI.credit.github_Seol7523, function () {
-                if(Client.Settings.App) {
-                    window.AppInventor.setWebViewString("Seol7523");
-                }else{
-                    window.open('https://github.com/Seol7523', '_blank');
-                };
+                window.open('https://github.com/Seolmango', '_blank');
             })
             UIcheck(Screen.UI.credit.github_Mossygoldcoin, function () {
-                if(Client.Settings.App) {
-                    window.AppInventor.setWebViewString("Mossygoldcoin");
-                }else{
-                    window.open('https://github.com/Mossygoldcoin', '_blank');
-                };
+                window.open('https://github.com/Mossygoldcoin', '_blank');
             })
             UIcheck(Screen.UI.credit.soundcloud_H, function () {
-                if(Client.Settings.App) {
-                    window.AppInventor.setWebViewString("H");
-                }else{
-                    window.open('https://soundcloud.com/hraver/switchover', '_blank');
-                };
+                window.open('https://soundcloud.com/hraver/switchover', '_blank');
             })
         } else if (Screen.Now.name === "setting") {
             Screen.Sounds.BGM.volume = Screen.UI.Element.sound_slider.value*0.01;
-            if(Client.Settings.App) {
-                window.AppInventor.setWebViewString("sound"+String(Screen.UI.Element.sound_slider.value).padStart(3, "0"));
-            }else{
-                window.localStorage.setItem("sound", Screen.UI.Element.sound_slider.value);
-            }
+            window.localStorage.setItem("sound", Screen.UI.Element.sound_slider.value);
             UIcheck(Screen.UI.setting.back, function () {
                 Screen.Now.Delete(); 
                 Screen.Now = new Screen.Create("title"); 
@@ -468,46 +409,29 @@ $(function () { // 창이 모두 로드된후 실행
                 Screen.Now.Delete();
                 Screen.Now = new Screen.Create("setting"); // 있어야 뒤로가기 버튼이 잘 변함
                 Client.Settings.Language = 1;
-                if(Client.Settings.App){
-                    window.AppInventor.setWebViewString("lan1");
-                }else{
-                    window.localStorage.setItem('settings',1);
-                };
+                window.localStorage.setItem('settings',1);
             });
             UIcheck(Screen.UI.setting.english, function () {
                 Screen.Now.Delete();
                 Screen.Now = new Screen.Create("setting");
                 Client.Settings.Language = 0;
-                if(Client.Settings.App){
-                    window.AppInventor.setWebViewString("lan0");
-                }else{
-                    window.localStorage.setItem('settings',0);
-                };
+                window.localStorage.setItem('settings',0);
             });
         } else if (Screen.Now.name === "matching") {
             UIcheck(Screen.UI.matching.back, function () { Screen.Now.Delete(); Screen.Now = new Screen.Create("title"); });
             Screen.BGctx.font = "36px 'Do Hyeon'";
             UIcheck(Screen.UI.matching.quickStart, function () {
-                if(Client.dev && Screen.UI.Element.name_input.value.slice(0,5) !== "[개발자]"){
-                    Screen.UI.Element.name_input.value = "[개발자]"+Screen.UI.Element.name_input.value;
-                };
                 if (NameCheck(Screen.UI.Element.name_input.value)) {
-                    socket.emit('join room', {newRoom: false, roomId: "auto", name: Screen.UI.Element.name_input.value, password: 0, device: Client.Settings.App});
+                    socket.emit('join room', {newRoom: false, roomId: "auto", name: Screen.UI.Element.name_input.value, password: 0});
                     Screen.Now.Delete(); Screen.Now = new Screen.Create("loading");
                 }
             });
             UIcheck(Screen.UI.matching.newRoom, function(){
-                if(Client.dev && Screen.UI.Element.name_input.value.slice(0,5) !== "[개발자]"){
-                    Screen.UI.Element.name_input.value = "[개발자]"+Screen.UI.Element.name_input.value;
-                };
                 if (NameCheck(Screen.UI.Element.name_input.value)) {
                     Screen.Now.Delete(); Screen.Now = new Screen.Create("newroom_select");
                 }
             });
             UIcheck(Screen.UI.matching.joinRoom, function(){
-                if(Client.dev && Screen.UI.Element.name_input.value.slice(0,5) !== "[개발자]"){
-                    Screen.UI.Element.name_input.value = "[개발자]"+Screen.UI.Element.name_input.value;
-                };
                 if (NameCheck(Screen.UI.Element.name_input.value)) {
                     const targetroomid = parseInt((parseInt(Screen.UI.Element.id_input.value, 16) / 9196)) - 17534;
                     if (isNaN(targetroomid)) {
@@ -516,7 +440,7 @@ $(function () { // 창이 모두 로드된후 실행
                         Screen.AlertData.unshift([(Client.Settings.Language === 0) ? "The ID is not correct." : "올바르지 않은 ID입니다.", 30]);
                     } else {
                         const roomkey = Screen.UI.Element.password_input.value; // 문자열 (숫자써도 문자열)
-                        socket.emit('join room', {newRoom: false, roomId: targetroomid, name: Screen.UI.Element.name_input.value, password: (roomkey) ? roomkey.length * 10000 + parseInt(roomkey) : 0, device: Client.Settings.App});
+                        socket.emit('join room', {newRoom: false, roomId: targetroomid, name: Screen.UI.Element.name_input.value, password: (roomkey) ? roomkey.length * 10000 + parseInt(roomkey) : 0});
                         Screen.Now.Delete(); Screen.Now = new Screen.Create("loading");
                     }
                 }
@@ -542,10 +466,10 @@ $(function () { // 창이 모두 로드된후 실행
                         Screen.AlertData.unshift([(Client.Settings.Language === 0) ? "password length must be 1~4" : "비밀번호의 길이는 1~4 여야합니다.", 30]);
                         return;
                     } else {
-                        socket.emit('join room', {newRoom: true, roomId: "auto", name: Screen.UI.Element.name_input.value, password: roomkey.length * 10000 + parseInt(roomkey), device: Client.Settings.App});
+                        socket.emit('join room', {newRoom: true, roomId: "auto", name: Screen.UI.Element.name_input.value, password: roomkey.length * 10000 + parseInt(roomkey)});
                     }
                 }else{
-                    socket.emit('join room', {newRoom: true, roomId: "auto", name: Screen.UI.Element.name_input.value, password: 0, device: Client.Settings.App});
+                    socket.emit('join room', {newRoom: true, roomId: "auto", name: Screen.UI.Element.name_input.value, password: 0});
                 }
                 Screen.Now.Delete(); Screen.Now = new Screen.Create("loading");
             })
@@ -622,28 +546,14 @@ $(function () { // 창이 모두 로드된후 실행
         }
 
         function NameCheck (PlayerName) {
-            if(Client.dev){
-                if (PlayerName.length < 1 || 15 < PlayerName.length) {
-                    Screen.AlertData.unshift([(Client.Settings.Language === 0) ? "Enter name(1~15 length)" : "이름은 1~15글자입니다.", 30]);
-                    return false;
-                } else if (Screen.BGctx.measureText(PlayerName).width < 10 || 432 < Screen.BGctx.measureText(PlayerName).width) {
-                    Screen.AlertData.unshift([(Client.Settings.Language === 0) ? "Name is too wide." : "이름이 너무 넓습니다.", 30]);
-                    return false;
-                }
-                return true;
-            }else{
-                if (PlayerName.length < 1 || 15 < PlayerName.length) {
-                    Screen.AlertData.unshift([(Client.Settings.Language === 0) ? "Enter name(1~15 length)" : "이름은 1~15글자입니다.", 30]);
-                    return false;
-                } else if (Screen.BGctx.measureText(PlayerName).width < 10 || 432 < Screen.BGctx.measureText(PlayerName).width) {
-                    Screen.AlertData.unshift([(Client.Settings.Language === 0) ? "Name is too wide." : "이름이 너무 넓습니다.", 30]);
-                    return false;
-                } else if (PlayerName.includes("[개발자]")) {
-                    Screen.AlertData.unshift([(Client.Settings.Language === 0) ? "The name is not allowed." : "허용되지 않는 이름입니다.", 30]);
-                    return false;
-                }
-                return true;
+            if (PlayerName.length < 1 || 15 < PlayerName.length) {
+                Screen.AlertData.unshift([(Client.Settings.Language === 0) ? "Enter name(1~15 length)" : "이름은 1~15글자입니다.", 30]);
+                return false;
+            } else if (Screen.BGctx.measureText(PlayerName).width < 10 || 432 < Screen.BGctx.measureText(PlayerName).width) {
+                Screen.AlertData.unshift([(Client.Settings.Language === 0) ? "Name is too wide." : "이름이 너무 넓습니다.", 30]);
+                return false;
             }
+            return true;
         }
 
         function UIcheck (data, execute) {

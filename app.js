@@ -53,8 +53,6 @@ const CharRad = 0.4;
 const CharDia = 0.8;
 const TaggerChaRad = 1;
 const { isObject } = require('util');
-const devcode = "yZVrK8xyp46yWoGCEf1zmUXeWazgvqunOumawOSul0zZ2xFYwKrmMAEouRvotwoMZJwKuBz3BMayllpKzNFxXWClyOApGztikNztUju02diBKgMkdY9lqihPZvoO8T6IHrPjmuuG5bGGfR96805HEqbGKGB8w9EPjObVBrD1nwjU4zms18ybfJyeXfZChGJEYGko0ymQVRqx9ShMgQB5hbBUSM2Pq8VWZNf8ZmUdSadq76NX9HO2vCVA0irtYHD";
-let dev = [];
 
 const port = process.env.PORT || 3000;
 http.listen(port, function () {
@@ -300,22 +298,12 @@ io.on('connection', function (socket) {
         io.to(Player.SocketIds[KickId]).emit('kicked');
     })
 
-    socket.on("manager_check", function (code) {
-        if(code === devcode){
-            dev.push(socket.id);
-            io.to(socket.id).emit("YouAreDev");
-        }
-    });
-
     socket.on('kicked ok', function () { // kick user는 방장의 소켓이므로 킥 당한 사람으로부터 신호를 받는 작업이 필요함.
         socket.leave(PlayerRoomId);
         PlayerRoomId = 0;
     })
 
     socket.on('disconnect', function () {
-        if(dev.indexOf(socket.id) !== -1){
-            dev.splice(dev.indexOf(socket.id), 1);
-        };
         if (PlayerRoomId !== 0) {
             if (Room.PlayerCounts[PlayerRoomId] < 2) { // 나간사람이 마지막 사람일 경우
                 RoomMg.deleteRoom(PlayerRoomId);

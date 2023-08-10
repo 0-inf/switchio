@@ -30,57 +30,6 @@ function RenderingManager(Screen, Client) {
                     drawText(Screen.UIctx, 800, i * 100 + 100, 55, 0, `rgba(0, 0, 0, ${1 / 30 * Screen.AlertData[i][1]})`, false, false, Screen.AlertData[i][0], "center");
                 }
             },
-            "foreveryone": function () {
-                Screen.control = {};
-                Screen.control.mode = 0; // 0 : emoji, 1 : switch
-                drawCircle(Screen.UIctx, 120-window.XfixStart, 780-YfixStart,100, "rgba(200,200,200,0.5)", "rgb(128,128,128)", 5);
-                drawCircle(Screen.UIctx, 1480-window.XfixStart, 780-YfixStart,100, "rgba(200,200,200,0.5)", "rgb(128,128,128)", 5);
-                if(Screen.control.mode === 0) {
-                    Screen.UIctx.drawImage(image.switchButton, 45 + window.XfixStart, 45+window.YfixStart, 50, 50);
-                    Screen.emoji.show = 1;
-                }else{
-                    Screen.UIctx.drawImage(image.emoji[2], 45 + window.XfixStart, 45+window.YfixStart, 50, 50);
-                }
-                if(Screen.mouseClick){
-                    if(Math.abs(Screen.mouseX - 45) < 25 && Math.abs(Screen.mouseY - 45) < 25){
-                        Screen.control.mode = 1 - Screen.control.mode;
-                        Screen.mouseClick = false;
-                    }
-                    if(Math.sqrt(Math.pow((Screen.mouseX - 120),2) + Math.pow((Screen.mouseY-780),2)) < 100){
-                        drawCircle(Screen.UIctx, Screen.mouseX + window.XfixStart, Screen.mouseY + window.YfixStart, 30, "rgb(128,128,128)", "rgb(128,128,128)", 5);
-                        if(Math.sqrt(Math.pow((Screen.mouseX - 120),2) + Math.pow((Screen.mouseY-780),2)) > 30){
-                            let angle = (Math.atan2(Screen.mouseY-780, Screen.mouseX - 120)*180)/Math.PI;
-                            if(angle > -67.5 && angle < 67.5){
-                                Client.PressedKeys[11] = 1;
-                            }else{
-                                Client.PressedKeys[11] = 0;
-                            }
-                            if(angle > 157.5 && angle < -157.5){
-                                Client.PressedKeys[12] = 1;
-                            }else{
-                                Client.PressedKeys[12] = 0;
-                            }
-                            if(angle > 22.5 && angle < 157.5){
-                                Client.PressedKeys[9] = 1;
-                            }else{
-                                Client.PressedKeys[9] = 0;
-                            }
-                            if(angle > -157.5 && angle < -22.5){
-                                Client.PressedKeys[10] = 1;
-                            }else{
-                                Client.PressedKeys[10] = 0;
-                            }
-                        }
-                    }else{
-                        drawCircle(Screen.UIctx, 120, 780, 30, "rgb(128,128,128)", "rgb(128,128,128)", 5);
-                    }
-                    if(Math.sqrt(Math.pow((Screen.mouseX - 1480),2) + Math.pow((Screen.mouseY-780),2)) < 100){
-                        drawCircle(Screen.UIctx, Screen.mouseX + window.XfixStart, Screen.mouseY + window.YfixStart, 30, "rgb(128,128,128)", "rgb(128,128,128)", 5);
-                    }else{
-                        drawCircle(Screen.UIctx, 1480, 780, 30, "rgb(128,128,128)", "rgb(128,128,128)", 5);
-                    }
-                }
-            },
             "agreement": function () {
                 drawRoundedRect(Screen.BGctx, 800, 450, 1500, 840, "#9f9f9f", "#7f7f7f", 8, 10);
                 drawText(Screen.BGctx, 800, 100, 55, 0, "#000000", false, false, "이 웹사이트는 소리재생과 쿠키의 생성,삭제를 합니다.\n원치 않으시다면 이 웹사이트를 나가주세요.\n소리는 언제든지 설정에서 변경가능합니다.\n확인을 누르면 소리가 재생됩니다.\nWe play sound, creates and deletes cookies.\n If you don't want, please leave this website.\n sound can be changed in settings at any time.\nIf you click 'OK',website will play sound.", "center");
