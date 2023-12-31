@@ -48,11 +48,11 @@ made by seolmango, mossygoldcoin, ysw421 and H with ❤
 >
 > 개발자로 참여함과 동시에 ~~거의 유일한~~ 미적 감각의 소유자로써 디자인에도 참여했습니다.
 >
-> + [H](https://soundcloud.com/hraver?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
+> + [H](https://soundcloud.com/hraverals?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing)
 >
 > 배경음악과 효과음 제작을 맡았습니다. 
 
 사용된 음악에 대한 정보입니다.
 
-<a href="https://soundcloud.com/hraver" title="H" target="_blank" style="color: #cccccc; text-decoration: none;">H</a> · <a href="https://soundcloud.com/hraver/switchover" title="swITchover" target="_blank" style="color: #cccccc; text-decoration: none;">swITchover</a></div>
+<a href="https://soundcloud.com/hraverals" title="H" target="_blank" style="color: #cccccc; text-decoration: none;">H</a> · <a href="https://soundcloud.com/hraverals/switchover" title="swITchover" target="_blank" style="color: #cccccc; text-decoration: none;">swITchover</a></div>
 
